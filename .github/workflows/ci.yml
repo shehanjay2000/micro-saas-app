@@ -20,8 +20,13 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Navigate to backend folder
+        run: cd backend
+
       - name: Install dependencies
         run: npm install
+        working-directory: backend
 
       - name: Run tests
         run: npm test
+        working-directory: backend
