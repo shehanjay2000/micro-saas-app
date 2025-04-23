@@ -1,6 +1,6 @@
-const express = require('express');
-const router = express.Router();
-const Todo = require('../models/todo');
+import { Router } from 'express';
+const router = Router();
+import Todo from '../models/todo.js';
 
 router.get('/', async (req, res) => {
   const todos = await Todo.find();
@@ -18,4 +18,14 @@ router.delete('/:id', async (req, res) => {
   res.status(204).end();
 });
 
-module.exports = router;
+router.patch('/:id', async (req, res) => {
+  const todo = await Todo.findById(req.params.id);
+  if (!todo) return res.status(404).send('Not found');
+
+  todo.completed = !todo.completed;
+  await todo.save();
+  res.json(todo);
+});
+
+
+export default router;

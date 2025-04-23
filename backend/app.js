@@ -1,12 +1,11 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-require('dotenv').config();
-const todoRoutes = require('./routes/todoRoutes');
+import express, { json } from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import todoRoutes from './routes/todoRoutes.js';
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(json());
 app.use('/api/todos', todoRoutes);
 
 const mongoUrl = "mongodb+srv://shehanjay2000:123@cluster0.p8xekiy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
@@ -18,5 +17,11 @@ connection.once("open",()=>{
     console.log("Database connected successfully")
 })
 
-
-module.exports = app; // for testing
+app.listen(
+    3000,
+    () =>{
+        console.log("sever is running on port 3000");
+    }
+          
+)
+export default app; // for testing
