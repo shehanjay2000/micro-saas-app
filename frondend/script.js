@@ -3,7 +3,7 @@ themeToggle.addEventListener('click', () => {
   document.documentElement.classList.toggle('dark');
 });
 
-const api = 'http://localhost:3000/api/todos';
+const api = 'https://micro-saas-app-c9ze.onrender.com/todos';
 
 async function fetchTodos() {
   const res = await fetch(api);
