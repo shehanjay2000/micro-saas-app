@@ -1,3 +1,4 @@
+import './tracing.js'
 import express, { json } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
