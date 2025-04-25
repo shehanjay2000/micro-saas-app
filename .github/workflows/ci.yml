@@ -9,28 +9,50 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         node-version: [16.x, 18.x, 20.x]
+        test-group: [unit, integration, e2e]
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+
       - name: Cache Node.js dependencies
         uses: actions/cache@v3
         with:
-            path: ~/.npm
-            key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: |
-              ${{ runner.os }}-node-
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
         working-directory: ./backend
         run: npm install
 
-      - name: Run tests
+      - name: Run ${{ matrix.test-group }} tests
         working-directory: ./backend
-        run: npm test
+        run: npm run test:${{ matrix.test-group }}
+
+      - name: Run coverage (only once)
+        if: matrix.test-group == 'unit'
+        working-directory: ./backend
+        run: npm run coverage
+
+      - name: Upload code coverage report
+        if: matrix.test-group == 'unit'
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-report
+          path: backend/coverage
+
+      - name: Audit dependencies
+        if: matrix.test-group == 'unit'
+        working-directory: ./backend
+        run: npm audit --audit-level=high
