@@ -9,12 +9,16 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         node-version: [16.x, 18.x, 20.x]
+        test-group: [unit, integration, e2e]
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -24,6 +28,6 @@ jobs:
         working-directory: ./backend
         run: npm install
 
-      - name: Run tests
+      - name: Run ${{ matrix.test-group }} tests
         working-directory: ./backend
-        run: npm test
+        run: npm run test:${{ matrix.test-group }}
