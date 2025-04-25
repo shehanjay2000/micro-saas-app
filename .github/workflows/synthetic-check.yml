@@ -1,0 +1,14 @@
+name: Synthetic Monitoring
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # every 10 minutes
+  workflow_dispatch:
+
+jobs:
+  check-tasks-endpoint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: GET /tasks
+        run: |
+          curl -s -o /dev/null -w "%{http_code}"https://micro-saas-app-c9ze.onrender.com/tasks | grep 200
